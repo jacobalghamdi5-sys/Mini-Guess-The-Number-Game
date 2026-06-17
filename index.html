@@ -2,36 +2,34 @@
 <html>
 <body>
 
-<p>I'm thinking of a number. Can you guess it?
-Type in a number between 1 and 10.</p>
+    <p>I'm thinking of a number. Can you guess it?<br>
+    Type a number between 1 and 10.</p>
 
-<input id = "myInput" type = "text">
+    <input id="myInput" type="text">
+    <button onclick="myFunction()">Is it right?</button>
 
-<button onclick = "myFunction()">Is it right?</button>
+    <p id="demo"></p>
 
-<p id = "demo></p>
+    <script>
+        // Generates a random number between 1 and 10
+        var correct = Math.floor(Math.random() * 10) + 1;
 
-<script>
-var correct = Math.floor(Math.random() * 10) +1;
-function myFunction() {
-  var guessBox = document.getElementByld("myInput");
-  var guess = Number(guessBox.value);
-  var text;
+        function myFunction() {
+            var guessBox = document.getElementById("myInput");
+            var guess = Number(guessBox.value);
+            var text;
 
-  // If the guess is correct
-  if (correct === guess) {
-   text = "That's it! Great job!";
-  // If the guess is too high
-  } else if (guess > correct) {
-   text: "Try lower.";
-  // If the guess is too low
-  } else {
-   text: "Try higher."
-  }
-  document.getElementByld("demo").innerHTML = text;
-}
-</script>
+            if (correct === guess) {
+                text = "That's it! Great job!";
+            } else if (guess > correct) {
+                text = "Try lower.";
+            } else {
+                text = "Try higher.";
+            }
+
+            document.getElementById("demo").innerHTML = text;
+        }
+    </script>
 
 </body>
 </html>
-  
