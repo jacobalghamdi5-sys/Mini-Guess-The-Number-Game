@@ -1,35 +1,92 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GTN: Guess the Number</title>
+    <link rel="stylesheet" href="style.css">
+</head>
 <body>
 
-    <p>I'm thinking of a number. Can you guess it?<br>
-    Type a number between 1 and 10.</p>
+    <div class="game-container">
+        <h1>🔢 GTN: Guess The Number</h1>
+        <p class="instructions">The computer has chosen a secret random number. Click on a circle block below to make your guess!</p>
+        
+        <div class="status-panel">
+            <div id="feedback">Pick a number to start...</div>
+            <div id="score-board">Guesses: <span id="attempts">0</span></div>
+        </div>
 
-    <input id="myInput" type="text">
-    <button onclick="myFunction()">Is it right?</button>
+        <div id="grid-container"></div>
 
-    <p id="demo"></p>
+        <div class="footer">
+            <a href="VIEW_OPENSOURCE.html">View Open Source Dashboard</a>
+        </div>
+    </div>
 
     <script>
-        // Generates a random number between 1 and 10
-        var correct = Math.floor(Math.random() * 10) + 1;
+        // Game initialization logic
+        let correctNumber = Math.floor(Math.random() * 100) + 1;
+        let attempts = 0;
+        let gameOver = false;
 
-        function myFunction() {
-            var guessBox = document.getElementById("myInput");
-            var guess = Number(guessBox.value);
-            var text;
+        const gridContainer = document.getElementById("grid-container");
+        const feedback = document.getElementById("feedback");
+        const attemptsSpan = document.getElementById("attempts");
 
-            if (correct === guess) {
-                text = "That's it! Great job!";
-            } else if (guess > correct) {
-                text = "Try lower.";
-            } else {
-                text = "Try higher.";
+        // Dynamically build 100 circle blocks
+        for (let i = 1; i <= 100; i++) {
+            const block = document.createElement("div");
+            block.classList.add("number-block");
+            block.innerText = i;
+            
+            // Add click event for each individual circle
+            block.addEventListener("click", function() {
+                if (gameOver || block.classList.contains("disabled")) return;
+
+                attempts++;
+                attemptsSpan.innerText = attempts;
+
+                if (i === correctNumber) {
+                    block.classList.add("correct");
+                    feedback.innerHTML = `🎉 <strong>Correct!</strong> The answer was ${correctNumber}. You won in ${attempts} guesses!`;
+                    feedback.style.color = "#238636";
+                    gameOver = true;
+                    disableAllBlocks();
+                } else if (i > correctNumber) {
+                    block.classList.add("too-high");
+                    feedback.innerText = `📉 Try lower than ${i}!`;
+                    feedback.style.color = "#da3633";
+                    block.classList.add("disabled");
+                    // Disable all numbers higher than this guess
+                    disableRange(i, 100);
+                } else {
+                    block.classList.add("too-low");
+                    feedback.innerText = `📈 Try higher than ${i}!`;
+                    feedback.style.color = "#1f6feb";
+                    block.classList.add("disabled");
+                    // Disable all numbers lower than this guess
+                    disableRange(1, i);
+                }
+            });
+
+            gridContainer.appendChild(block);
+        }
+
+        // Helper function to lock out ranges
+        function disableRange(start, end) {
+            const blocks = document.querySelectorAll(".number-block");
+            for (let i = start; i <= end; i++) {
+                blocks[i - 1].classList.add("disabled");
+                if (i !== correctNumber && i > correctNumber) blocks[i - 1].classList.add("too-high");
+                if (i !== correctNumber && i < correctNumber) blocks[i - 1].classList.add("too-low");
             }
+        }
 
-            document.getElementById("demo").innerHTML = text;
+        function disableAllBlocks() {
+            const blocks = document.querySelectorAll(".number-block");
+            blocks.forEach(b => b.classList.add("disabled"));
         }
     </script>
-
 </body>
 </html>
